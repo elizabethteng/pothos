@@ -12,12 +12,12 @@ import sys
 # import pdspy model data
 param_names = ["Tstar","logL_star","logM_disk","logR_disk","h_0","logR_in",\
           "gamma","beta","logM_env","logR_env","f_cav","ksi","loga_max","p","incl"]
-dictionary=np.load("../pigeon/dictionary.npy")
-with open ('../pigeon/cubefull.txt', 'rb') as fp:
+dictionary=np.load("./gmd/dictionary.npy")
+with open ('./gmd/cubefull.txt', 'rb') as fp:
     cube = np.array(pickle.load(fp))[:,100:500]
-with open ('../pigeon/cubefull.txt', 'rb') as fp:
+with open ('./gmd/cubefull.txt', 'rb') as fp:
     nancube = np.array(pickle.load(fp))[:,100:500]
-with open ('../pigeon/xvals.txt', 'rb') as fp:
+with open ('./gmd/xvals.txt', 'rb') as fp:
     xvals = pickle.load(fp)[100:500] # normal spaced wavelengths, use np.log10(xvals)
 
 # fix -infs: powerlaw cutoff
@@ -36,9 +36,8 @@ nancube[nancube<-20]=np.nan
 seds_msub = cube - np.nanmean(nancube,axis=1)[:,np.newaxis]
 
 # run PCA
-t0 = time()
 pca = PCA(n_components=40).fit(seds_msub)
-print("PCA finished in %0.3fs" % (time() - t0))
+print("PCA finished")
 eigenseds=np.array(pca.components_)
 
 # compile PCA weight data
@@ -55,19 +54,25 @@ m=[]
 for i in range(len(cube)):
     pars=[]
     for j in range(len(param_names)):
-        pars.append(dictionary[i][param_names[j]]
+        pars.append(dictionary[i][param_names[j]])
     p.append(pars)
     weights=[]
     for k in range(15):
         weights.append(fitdata[i][k])
     w.append(weights)
     m.append(np.nanmean(nancube,axis=1)[i])
-Xs=p
 w=np.transpose(w)
 ws=np.ndarray.tolist(w)
 ws.append(m)
-yerrs=[]
-for i in range(16):
-    yerrs.append([x*0.01 for x in ws[i]])
 
+print("weights calculated")
 
+name=str(sys.argv[1])
+
+with open ("./gmd/"+name+"_parvals.txt","wb") as fp:
+	pickle.dump(p,fp)
+
+with open ("./gmd/"+name+"_weights.txt","wb") as fp:
+	pickle.dump(ws,fp)
+
+print("files ./gmd/"+name+"_parvals.txt and ./gmd/"+name+"_weights.txt saved")
