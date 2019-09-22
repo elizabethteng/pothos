@@ -32,7 +32,7 @@ with open ("./gmd/"+rname+"_eigenseds.txt","rb") as fp:
 	eigenseds=pickle.load(fp)
 with open ("./gmd/"+rname+"_mean.txt","rb") as fp:
 	pcamean=pickle.load(fp)
-
+print("pca weights loaded from "+rname)
 
 yerrs=[]
 for i in range(16):
@@ -81,6 +81,7 @@ def F_chisq_quiet(hyperparams,gp):
 def chisq(p):
     return F_chisq_quiet(p,blankhodlr)
 
+print("starting minimize routine")
 t0=time()
 result = minimize(chisq,initvecs,options={'maxiter':50})
 print("minimize routine done in %0.3fs" % (time() - t0))
