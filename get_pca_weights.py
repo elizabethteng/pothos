@@ -7,7 +7,16 @@ from sklearn.decomposition import PCA
 import george
 from george import kernels
 from scipy.optimize import minimize
-import sys
+import argparse
+
+desc='''
+Optimize F -- optimizes 15d GP hyperparameters, minimizing chisq between reconst library and pdspy library.
+'''
+parser=argparse.ArgumentParser(description=desc)
+parser.add_argument("--name", help="name of the file being written out, minus filetype",type=str)
+args=parser.parse_args()
+name=args.name
+
 
 # import pdspy model data
 param_names = ["Tstar","logL_star","logM_disk","logR_disk","h_0","logR_in",\
@@ -66,8 +75,6 @@ ws=np.ndarray.tolist(w)
 ws.append(m)
 
 print("weights calculated")
-
-name=str(sys.argv[1])
 
 with open ("./gmd/"+name+"_parvals.txt","wb") as fp:
 	pickle.dump(p,fp)
