@@ -74,5 +74,12 @@ with open ("./gmd/"+name+"_parvals.txt","wb") as fp:
 
 with open ("./gmd/"+name+"_weights.txt","wb") as fp:
 	pickle.dump(ws,fp)
+    
+    
+with open ("./gmd/"+name+"_eigenseds.txt","wb") as fp:
+	pickle.dump(eigenseds,fp)
+with open ("./gmd/"+name+"_mean.txt","wb") as fp:
+	pickle.dump(pca.mean_,fp)
+    
 
-print("files ./gmd/"+name+"_parvals.txt and ./gmd/"+name+"_weights.txt saved")
+print("files "+name+" saved")

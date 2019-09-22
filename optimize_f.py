@@ -9,8 +9,6 @@ from george import kernels
 from scipy.optimize import minimize
 import sys
 
-
-
 with open ("./gmd/cubeflat.txt","rb") as fp:
 	cubeflat=pickle.load(fp)
 name=str(sys.argv[1])
@@ -18,6 +16,12 @@ with open ("./gmd/"+name+"_parvals.txt","rb") as fp:
 	Xs=pickle.load(fp)
 with open ("./gmd/"+name+"_weights.txt","rb") as fp:
 	ws=pickle.load(fp)
+    
+with open ("./gmd/"+name+"_eigenseds.txt","rb") as fp:
+	eigenseds=pickle.load(fp)
+with open ("./gmd/"+name+"_mean.txt","rb") as fp:
+	pcamean=pickle.load(fp)
+
 
 yerrs=[]
 for i in range(16):
@@ -48,26 +52,34 @@ kernel = 23*kernels.ExpSquaredKernel(1**2,ndim=15,axes=0)*\
         kernels.ExpSquaredKernel(1**2,ndim=15,axes=14) 
 blankhodlr=george.GP(kernel,solver=george.HODLRSolver)
 
-def F(hyperparams,gp):
-    t0=time()
+def F_chisq_quiet(hyperparams,gp):
     preds=[]
     for i in range(len(ws)):  # same covfunc for each weight and the sample mean
         t1=time()
         gp.set_parameter_vector(hyperparams[i])
         gp.compute(Xs,yerrs[i])
-        print("GP computed in %0.3fs" % (time() - t1))
         t2=time()
         pred, pred_var = gp.predict(ws[i], Xs, return_var=True)
         preds.append(pred)
-        print("predictions made in %0.3fs" % (time() - t2))    
     reconst_SEDs=[]
     for i in range(3850):
-        reconst=np.dot(np.array(preds)[:,i][0:15],eigenseds[0:15]) + pca.mean_ + np.array(preds)[:,i][15]
+        reconst=np.dot(np.array(preds)[:,i][0:15],eigenseds[0:15]) + pcamean + np.array(preds)[:,i][15]
         reconst_SEDs.append(reconst)
-    print("done in %0.3fs" % (time() - t0))
-    return reconst_SEDs
+    ashflat=np.ndarray.flatten(np.array(reconst_SEDs))
+    chisq=np.sum((cubeflat-ashflat)**2/0.1)
+    return chisq
 
-allseds=F(initvecs,blankhodlr)
+def chisq(p):
+    return F_chisq_quiet(p,blankhodlr)
 
+t0=time()
+result = minimize(chisq,initvecs,options={'maxiter':50})
+print("minimize routine done in %0.3fs" % (time() - t0))
 
+print("Final chisq: "+np.array(result.x).reshape(16,16))
 
+with open ("./optimize_result.txt","wb") as fp:
+	pickle.dump(np.array(result.x).reshape(16,16),fp)
+
+with open ("./time_rec.txt","wb") as fp:
+	pickle.dump(str(time() - t0),fp)
