@@ -69,6 +69,14 @@ for i in range(len(cube)):
             pars.append(np.log10(2.1-1*dictionary[i][param_names[j]]))
         if j==8:
             pars.append(np.log10(-1.5-1*dictionary[i][param_names[j]]))
+	beta=dictionary[i][param_names[7]]
+	incl=dictionary[i][param_names[14]]
+	bix=60*beta*np.cos(0.7)+incl*np.sin(0.7)
+        biy=60*-beta*np.sin(0.7)+incl*np.cos(0.7)
+	if j==15:
+	    pars.append(bix)
+	if j==16:
+	    pars.append(biy)
     p.append(pars)
     weights=[]
     for k in range(15):
