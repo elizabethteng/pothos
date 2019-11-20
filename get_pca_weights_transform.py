@@ -60,11 +60,12 @@ for i in range(len(cube)):
 p=[]
 w=[]
 m=[]
+
+theta=0.7
 for i in range(len(cube)):
     pars=[]
-    b=dictionary[i][param_names[7]]
-    i=dictionary[i][param_names[14]]
-    theta=0.7
+    beta=dictionary[i][param_names[7]]
+    incl=dictionary[i][param_names[14]]
     for j in range(len(param_names)):
         if not j in [6,8,15,16]:
             pars.append(dictionary[i][param_names[j]])
@@ -73,9 +74,9 @@ for i in range(len(cube)):
         if j==8:
             pars.append(np.log10(-1.5-1*dictionary[i][param_names[j]]))
         if j==15:
-            pars.append(1-np.cos((((b*np.cos(theta)) + (i*np.sin(theta)/60))-.5)*np.pi/2))
+            pars.append(1-np.cos((((beta*np.cos(theta)) + (incl*np.sin(theta)/60))-.5)*np.pi/2))
         if j==16:
-            pars.append((-b*np.sin(theta)) + (i*np.cos(theta)/60))
+            pars.append((-beta*np.sin(theta)) + (incl*np.cos(theta)/60))
     p.append(pars)
     weights=[]
     for k in range(15):
