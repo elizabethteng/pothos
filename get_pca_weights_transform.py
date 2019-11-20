@@ -49,6 +49,15 @@ pca = PCA(n_components=40).fit(seds_msub)
 print("PCA finished")
 eigenseds=np.array(pca.components_)
 
+
+
+
+
+
+
+
+
+
 # compile PCA weight data
 fitdata=[]
 for i in range(len(cube)):
@@ -86,6 +95,25 @@ for i in range(len(cube)):
 w=np.transpose(w)
 ws=np.ndarray.tolist(w)
 ws.append(m)
+
+
+
+### transform beta/incl
+beta=fitdata[:,0]
+incl=fitdata[:,1]*1.5/90
+def ret_bix(beta, incl, theta):
+    beta_incl_x = beta*np.cos(theta) + incl*np.sin(theta)
+    return (beta*np.cos(theta)) + (incl*np.sin(theta))
+def ret_biy(beta, incl, theta):
+    beta_incl_y = -beta*np.sin(theta) + incl*np.cos(theta)
+    return (-beta*np.sin(theta)) + (incl*np.cos(theta))
+a=ret_bix(beta, incl, .7)    
+a=1-np.cos((a-.5)*np.pi/2)
+b=ret_biy(beta, incl, .7)
+
+#logmenv trans: -0.4 to 0.3, then 0.3, 0.85
+#logmenv: -8 to -3.5, -3.5 to -2
+
 
 print("weights calculated")
 
