@@ -20,7 +20,7 @@ name=args.name
 
 # import pdspy model data
 param_names = ["Tstar","logL_star","logM_disk","logR_disk","h_0","logR_in",\
-          "gamma","beta","logM_env","logR_env","f_cav","ksi","loga_max","p","incl"]
+               "gamma","beta","logM_env","logR_env","f_cav","ksi","loga_max","p","incl","bi_x","bi_y"]
 dictionary=np.load("./gmd/dictionary.npy")
 with open ('./gmd/cubefull.txt', 'rb') as fp:
     cube = np.array(pickle.load(fp))[:,100:500]
@@ -49,15 +49,6 @@ pca = PCA(n_components=40).fit(seds_msub)
 print("PCA finished")
 eigenseds=np.array(pca.components_)
 
-
-
-
-
-
-
-
-
-
 # compile PCA weight data
 fitdata=[]
 for i in range(len(cube)):
@@ -71,21 +62,20 @@ w=[]
 m=[]
 for i in range(len(cube)):
     pars=[]
+    b=dictionary[i][param_names[7]]
+    i=dictionary[i][param_names[14]]
+    theta=0.7
     for j in range(len(param_names)):
-        if not j in [6,8]:
+        if not j in [6,8,15,16]:
             pars.append(dictionary[i][param_names[j]])
         if j==6:
             pars.append(np.log10(2.1-1*dictionary[i][param_names[j]]))
         if j==8:
             pars.append(np.log10(-1.5-1*dictionary[i][param_names[j]]))
-	beta=dictionary[i][param_names[7]]
-	incl=dictionary[i][param_names[14]]
-	bix=60*beta*np.cos(0.7)+incl*np.sin(0.7)
-        biy=60*-beta*np.sin(0.7)+incl*np.cos(0.7)
-	if j==15:
-	    pars.append(bix)
-	if j==16:
-	    pars.append(biy)
+        if j==15:
+            pars.append(1-np.cos((((b*np.cos(theta)) + (i*np.sin(theta)/60))-.5)*np.pi/2))
+        if j==16:
+            pars.append((-b*np.sin(theta)) + (i*np.cos(theta)/60))
     p.append(pars)
     weights=[]
     for k in range(15):
@@ -96,34 +86,15 @@ w=np.transpose(w)
 ws=np.ndarray.tolist(w)
 ws.append(m)
 
-
-
-### transform beta/incl
-beta=fitdata[:,0]
-incl=fitdata[:,1]*1.5/90
-def ret_bix(beta, incl, theta):
-    beta_incl_x = beta*np.cos(theta) + incl*np.sin(theta)
-    return (beta*np.cos(theta)) + (incl*np.sin(theta))
-def ret_biy(beta, incl, theta):
-    beta_incl_y = -beta*np.sin(theta) + incl*np.cos(theta)
-    return (-beta*np.sin(theta)) + (incl*np.cos(theta))
-a=ret_bix(beta, incl, .7)    
-a=1-np.cos((a-.5)*np.pi/2)
-b=ret_biy(beta, incl, .7)
-
 #logmenv trans: -0.4 to 0.3, then 0.3, 0.85
 #logmenv: -8 to -3.5, -3.5 to -2
-
 
 print("weights calculated")
 
 with open ("./gmd/"+name+"_parvals.txt","wb") as fp:
 	pickle.dump(p,fp)
-
 with open ("./gmd/"+name+"_weights.txt","wb") as fp:
-	pickle.dump(ws,fp)
-    
-    
+	pickle.dump(ws,fp)    
 with open ("./gmd/"+name+"_eigenseds.txt","wb") as fp:
 	pickle.dump(eigenseds,fp)
 with open ("./gmd/"+name+"_mean.txt","wb") as fp:
