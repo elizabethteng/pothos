@@ -20,7 +20,7 @@ name=args.name
 
 # import pdspy model data
 param_names = ["Tstar","logL_star","logM_disk","logR_disk","h_0","logR_in",\
-               "gamma","beta","logM_env","logR_env","f_cav","ksi","loga_max","p","incl","bi_x","bi_y"]
+               "gamma","beta","logM_env","logR_env","f_cav","ksi","loga_max","p","incl"]
 dictionary=np.load("./gmd/dictionary.npy")
 with open ('./gmd/cubefull.txt', 'rb') as fp:
     cube = np.array(pickle.load(fp))[:,100:500]
@@ -67,15 +67,15 @@ for i in range(len(cube)):
     beta=dictionary[i][param_names[7]]
     incl=dictionary[i][param_names[14]]
     for j in range(len(param_names)):
-        if not j in [6,8,15,16]:
+        if not j in [6,8,7,14]:
             pars.append(dictionary[i][param_names[j]])
         if j==6:
             pars.append(np.log10(2.1-1*dictionary[i][param_names[j]]))
         if j==8:
             pars.append(np.log10(-1.5-1*dictionary[i][param_names[j]]))
-        if j==15:
+        if j==7:
             pars.append(1-np.cos((((beta*np.cos(theta)) + (incl*np.sin(theta)/60))-.5)*np.pi/2))
-        if j==16:
+        if j==14:
             pars.append((-beta*np.sin(theta)) + (incl*np.cos(theta)/60))
     p.append(pars)
     weights=[]
