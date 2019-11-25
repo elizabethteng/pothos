@@ -15,6 +15,7 @@ Optimize F -- optimizes 15d GP hyperparameters, minimizing chisq between reconst
 parser=argparse.ArgumentParser(description=desc)
 parser.add_argument("--rname", help="name of the pca weights read in for training data",type=str)
 parser.add_argument("--wname", help="name of the results being written out, minus filetype",type=str)
+parser.add_argument("--verbose",help="print out chisq and hyperparameter vector in the likelihood function",action="store_true")
 args=parser.parse_args()
 rname=args.rname
 wname=args.wname
@@ -39,10 +40,9 @@ for i in range(16):
 	yerrs.append([x*0.01 for x in ws[i]])
 initvecs=[]
 for i in range(16):
-    initvecs.append([ 6.33043185, 18.42068074,  0.        ,  0.        , -0.4462871 ,
-       -5.05145729, -1.38629436, -2.4079456086518722, -2.4079456086518722,  -3.2188758248682006        ,
-       -3.21887582, -2.77258872, -2.77258872,  1.38629436,  2.19722458,
-        0.8109302162163288])
+    initvecs.append([ 6.33043185, 18.42068074,  0.,  0., -0.4462871 , -5.05145729, -1.38629436, 
+                     -2.4079456086518722, -2.4079456086518722,  -3.2188758248682006, -3.21887582, 
+                     -2.77258872, -2.77258872,  1.38629436,  2.19722458, 0.8109302162163288])
 
 kernel = 23*kernels.ExpSquaredKernel(1**2,ndim=15,axes=0)*\
         kernels.ExpSquaredKernel(1**2,ndim=15,axes=1)*\
@@ -61,11 +61,15 @@ kernel = 23*kernels.ExpSquaredKernel(1**2,ndim=15,axes=0)*\
         kernels.ExpSquaredKernel(1**2,ndim=15,axes=14) 
 blankhodlr=george.GP(kernel,solver=george.HODLRSolver)
 
-def F_chisq_quiet(hyperparams,gp):
+def F_chisq_quiet(hp,gp):
+    hyperparams=np.array(hp).reshape(16,16)
     preds=[]
     for i in range(len(ws)):  # same covfunc for each weight and the sample mean
         t1=time()
         gp.set_parameter_vector(hyperparams[i])
+        if args.verbose==True:
+            print("weight #"+str(i))
+            print(gp.get_parameter_vector())
         gp.compute(Xs,yerrs[i])
         t2=time()
         pred, pred_var = gp.predict(ws[i], Xs, return_var=True)
@@ -76,6 +80,7 @@ def F_chisq_quiet(hyperparams,gp):
         reconst_SEDs.append(reconst)
     allsedsflat=np.ndarray.flatten(np.array(reconst_SEDs))
     chisq=np.sum((cubeflat-allsedsflat)**2/0.1)
+    print(chisq)
     return chisq
 
 def chisq(p):
