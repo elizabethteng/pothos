@@ -62,7 +62,9 @@ kernel = 23*kernels.ExpSquaredKernel(1**2,ndim=15,axes=0)*\
 blankhodlr=george.GP(kernel,solver=george.HODLRSolver)
 
 def F_chisq_quiet(hp,gp):
-    hyperparams=np.array(hp).reshape(16,16)
+    t0=time()
+    hyperparams=np.transpose(np.array(hp).reshape(16,16))
+    print(hyperparams)
     preds=[]
     for i in range(len(ws)):  # same covfunc for each weight and the sample mean
         t1=time()
@@ -81,6 +83,7 @@ def F_chisq_quiet(hp,gp):
     allsedsflat=np.ndarray.flatten(np.array(reconst_SEDs))
     chisq=np.sum((cubeflat-allsedsflat)**2/0.1)
     print(chisq)
+    print(time()-t0)
     return chisq
 
 def chisq(p):
@@ -88,7 +91,7 @@ def chisq(p):
 
 print("starting minimize routine")
 t0=time()
-result = minimize(chisq,initvecs,options={'maxiter':50})
+result = minimize(chisq,initvecs,method="COBYLA")
 print("minimize routine done in %0.3fs" % (time() - t0))
 
 print("Final chisq: "+np.array(result.x).reshape(16,16))
