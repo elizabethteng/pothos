@@ -10,7 +10,7 @@ from scipy.optimize import minimize
 import argparse
 
 desc='''
-Optimize F -- optimizes 15d GP hyperparameters, minimizing chisq between reconst library and pdspy library.
+Optimize F -- optimizes 15d GP hyperparameters, minimizing chisq between reconst library and pdspy library. records hyperparameters and steps at each point to provide a jumping off point
 '''
 parser=argparse.ArgumentParser(description=desc)
 parser.add_argument("--rname", help="name of the pca weights read in for training data",type=str)
@@ -99,3 +99,5 @@ with open ("./"+wname+"_optimize_result.txt","wb") as fp:
 	pickle.dump(np.array(result.x).reshape(16,16),fp)
 with open ("./"+wname+"_time_rec.txt","wb") as fp:
 	pickle.dump(str(time() - t0),fp)
+with open("./"+wname+"_optimize_result..txt","a") as fp:
+	pickle.dump(

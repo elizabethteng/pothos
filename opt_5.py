@@ -44,6 +44,7 @@ for i in range(16):
                      -2.4079456086518722, -2.4079456086518722,  -3.2188758248682006, -3.21887582, 
                      -2.77258872, -2.77258872,  1.38629436,  2.19722458, 0.8109302162163288])
 
+
 kernel = 23*kernels.ExpSquaredKernel(1**2,ndim=15,axes=0)*\
         kernels.ExpSquaredKernel(1**2,ndim=15,axes=1)*\
         kernels.ExpSquaredKernel(1**2,ndim=15,axes=2)*\
