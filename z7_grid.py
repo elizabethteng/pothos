@@ -66,7 +66,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     print("finished running SED for "+filename[0:40]+"... in %0.3fs" % (time() - t2))
     
     # Write out the file.
-    model.write_yso("./etgrid/filename/"+filename)
+    model.write_yso("./etgrid/models/"+filename)
 
 with open ('./etgrid/etgrid_coords_bypoint_orig.txt', 'rb') as fp:
     coords = pickle.load(fp)    

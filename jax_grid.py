@@ -43,7 +43,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     model.add_star(luminosity=10.**logL_star, temperature=Tstar)
     model.set_spherical_grid(10.**logR_in, 10.**logR_env, 100, 101, 2, \
             code="radmc3d")
-    model.add_pringle_disk(mass=10.**logM_disk, rmin=10.**logR_in, \
+    model.add_pringle_disk(mass=10.**logM_disk, rmin=10.**logR_in,\
             rmax=10.**logR_disk, plrho=alpha, h0=h_0, plh=beta, dust=ddust)
     model.add_ulrich_envelope(mass=10.**logM_env, rmin=10.**logR_in, \
             rmax=10.**logR_env, cavpl=ksi, cavrfact=f_cav, dust=edust)
@@ -51,7 +51,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
 
     # Run the thermal simulation
     model.run_thermal(code="radmc3d", nphot=1e6, \
-            modified_random_walk=True, verbose=False, setthreads=15, \
+            modified_random_walk=True, verbose=False, setthreads=18, \
             timelimit=10800)
     
     # Run the SED
@@ -64,7 +64,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     print("finished running SED for "+filename[0:40]+"... in %0.3fs" % (time() - t2))
     
     # Write out the file.
-    model.write_yso("./etgrid/filename/"+filename)
+    model.write_yso("./etgrid/models/"+filename)
 
 with open ('./etgrid/etgrid_coords_bypoint_orig.txt', 'rb') as fp:
     coords = pickle.load(fp)    
