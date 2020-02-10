@@ -24,7 +24,8 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     filename=filename[:-1]
     filename+=".hdf5"
     print("starting on "+filename)
-    
+    print("filename is",len(filename))  
+  
     # Set up the dust properties.
     dust_gen = dust.DustGenerator(dust.__path__[0]+"/data/diana_wice.hdf5")
     ddust = dust_gen(10.**loga_max / 1e4, p)
