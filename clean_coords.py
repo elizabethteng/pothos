@@ -3,6 +3,8 @@
 import numpy as np
 import pickle
 
+ranges = [[3000.,5000.], [-1,3.],[-8.,-2.], [0.,3.],[0.01,0.5], [-1.,2.5], [0.0,1.999], \
+          [0.5,2.0],[-8.,-2.],[2.5,4.], [0.,1.], [0.5,1.5], [0.,5.], [2.5,4.5], [0.,90.]]
 new_ranges = [[3000.,5000.], [-1,3.],[-8.,-2.], [0.,3.],[0.01,0.5], [-1.,2.5], [np.log10(0.101),np.log10(2.1)], \
           [0,2],[np.log10(0.5),np.log10(6.5)],[2.5,4.], [0.,1.], [0.5,1.5], [0.,5.], [2.5,4.5], [-1.25,0.75]]
 
@@ -24,17 +26,20 @@ def trans_to_orig(pars):
 
 with open ('./etgrid/raw_coords_bypoint.txt', 'rb') as fp:
     raw_coords_bypoint = pickle.load(fp)
-    
+with open ('./etgrid/raw_coords_bypoint.txt', 'rb') as fp:
+    raw_coords_bypoint_copy = pickle.load(fp)
+
 good_trans=[]
 good_orig=[]
-    
+
 for i in range(len(raw_coords_bypoint)):
-    point=raw_coords_bypoint[i]
     add=True
+    point=raw_coords_bypoint[i]
     for j in (0,1,3,9,10,13):
         if not new_ranges[j][0]<=point[j]<=new_ranges[j][1]:
             add=False
-    origpoint=trans_to_orig(point)
+            
+    origpoint=trans_to_orig(raw_coords_bypoint_copy[i])
     if not 0.5<=origpoint[7]<=2.0:
         add=False
     if not 0<=origpoint[14]<=90:
