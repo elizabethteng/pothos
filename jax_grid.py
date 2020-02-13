@@ -6,6 +6,12 @@ import pickle
 from time import time
 import pdspy.modeling as modeling
 import pdspy.dust as dust
+import argparse
+
+d
+parser=argparse.ArgumentParser()
+parser.add_argument("--threads", help="number of threads",type=int)
+parser.add_argument("--start",help="starting number",type=int)
 
 param_names = ["Tstar","logLstar","logMdisk","logRdisk","h0","logRin",\
           "gamma","beta","logMenv","logRenv","fcav","ksi","logamax","p","incl"]
@@ -56,13 +62,16 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
 
 dictionary=np.load("./etgrid/et_dictionary.npy")
     
-for i in range(0,1000):
-#for i in range(3500,len(coords)):
-    t0=time()
-    point=dictionary[i]
-    run_yso_model( Tstar=point["Tstar"], logL_star=point["logLstar"], logM_disk=point["logMdisk"], \
-                  logR_disk=point["logRdisk"], h_0=point["h0"], logR_in=point["logRin"], gamma=point["gamma"], \
-                  beta=point["beta"], logM_env=point["logMenv"], logR_env=point['logRenv'], \
-                  f_cav=point['fcav'], ksi=point['ksi'], loga_max=point['logamax'], p=point['p'], \
-                  incl=point['incl'], filename=point['filename'])
-    print("finished running SED #"+str(i)+" in %0.3fs" % (time() - t0))
+for i in range(26,700):
+    try:
+        t0=time()
+        point=dictionary[i]
+        run_yso_model( Tstar=point["Tstar"], logL_star=point["logLstar"], logM_disk=point["logMdisk"], \
+                      logR_disk=point["logRdisk"], h_0=point["h0"], logR_in=point["logRin"], gamma=point["gamma"], \
+                      beta=point["beta"], logM_env=point["logMenv"], logR_env=point['logRenv'], \
+                      f_cav=point['fcav'], ksi=point['ksi'], loga_max=point['logamax'], p=point['p'], \
+                      incl=point['incl'], filename=point['filename'])
+        print("finished running SED #"+str(i)+" in %0.3fs" % (time() - t0))
+    except:
+        print(str(i)+" timed out")
+        pass

@@ -6,6 +6,13 @@ import pickle
 from time import time
 import pdspy.modeling as modeling
 import pdspy.dust as dust
+import argparse
+
+
+parser=argparse.ArgumentParser()
+parser.add_argument("--threads", help="number of threads",type=int)
+parser.add_argument("--start",help="starting number",type=int)
+
 
 param_names = ["Tstar","logLstar","logMdisk","logRdisk","h0","logRin",\
           "gamma","beta","logMenv","logRenv","fcav","ksi","logamax","p","incl"]
@@ -42,26 +49,30 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
 
     # Run the thermal simulation
     model.run_thermal(code="radmc3d", nphot=1e6, \
-            modified_random_walk=True, verbose=False, setthreads=9, \
+            modified_random_walk=True, verbose=False, setthreads=parser.parse_args().threads, \
             timelimit=10800)
     
     # Run the SED
     model.set_camera_wavelength(np.logspace(-1.,4.,500))
     model.run_sed(name="SED", nphot=1e5, loadlambda=True, incl=incl, \
             pa=0., dpc=140., code="radmc3d", camera_scatsrc_allfreq=True, \
-            verbose=False, setthreads=9)
+            verbose=False, setthreads=parser.parse_args().threads)
     
     # Write out the file.
     model.write_yso("./../etgrid/models/"+filename)
 
 dictionary=np.load("./../etgrid/et_dictionary.npy")
     
-for i in range(2000,2500):
-    t0=time()
-    point=dictionary[i]
-    run_yso_model( Tstar=point["Tstar"], logL_star=point["logLstar"], logM_disk=point["logMdisk"], \
-                  logR_disk=point["logRdisk"], h_0=point["h0"], logR_in=point["logRin"], gamma=point["gamma"], \
-                  beta=point["beta"], logM_env=point["logMenv"], logR_env=point['logRenv'], \
-                  f_cav=point['fcav'], ksi=point['ksi'], loga_max=point['logamax'], p=point['p'], \
-                  incl=point['incl'], filename=point['filename'])
-    print("finished running SED #"+str(i)+" in %0.3fs" % (time() - t0))
+for i in range(2047,2500):
+    try:
+        t0=time()
+        point=dictionary[i]
+        run_yso_model( Tstar=point["Tstar"], logL_star=point["logLstar"], logM_disk=point["logMdisk"], \
+                      logR_disk=point["logRdisk"], h_0=point["h0"], logR_in=point["logRin"], gamma=point["gamma"], \
+                      beta=point["beta"], logM_env=point["logMenv"], logR_env=point['logRenv'], \
+                      f_cav=point['fcav'], ksi=point['ksi'], loga_max=point['logamax'], p=point['p'], \
+                      incl=point['incl'], filename=point['filename'])
+        print("finished running SED #"+str(i)+" in %0.3fs" % (time() - t0))
+    except:
+        print(str(i)+" timed out")
+        pass

@@ -62,7 +62,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
 
 dictionary=np.load("./../etgrid/et_dictionary.npy")
     
-for i in range(3030,3500):
+for i in range(parser.parse_args().start,len(dictionary)):
     try:
         t0=time()
         point=dictionary[i]
