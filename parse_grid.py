@@ -9,6 +9,7 @@ directory="./etgrid/models/"
 
 failed=[]
 seds_dict=[]
+seds=[]
 
 for i in range(len(dictionary)):
     filename=dictionary[i]['filename']
@@ -19,6 +20,7 @@ for i in range(len(dictionary)):
         entry['seds'] = np.array(np.log10(model.spectra["SED"].flux))  
         print("adding "+str(i)+" to dictionary")
         seds_dict.append(entry)
+        seds.append(np.array(np.log10(model.spectra["SED"].flux)))
     else:
         print(str(i)+" failed")
         failed.append(i)
@@ -28,8 +30,6 @@ print(str(len(seds_dict))+" added to seds_dict, "+str(len(failed))+ " failed")
 
 np.save("./etgrid/et_dictionary_seds.npy",seds_dict)
 np.save("./failed.npy",failed)
-
-
-
+np.save("./etgrid/seds.npy",seds)
 
 
