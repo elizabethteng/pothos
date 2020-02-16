@@ -2,29 +2,34 @@
 
 import numpy as np
 import os
-import pickle
-from time import time
 import pdspy.modeling as modeling
 
-with open ('./etgrid/etgrid_coords_byaxis_orig.txt', 'rb') as fp:
-    coords_byaxis = pickle.load(fp)
-with open ('./etgrid/etgrid_coords_bypoint_orig.txt', 'rb') as fp:
-    coords_bypoint = pickle.load(fp)
-    
-    
+dictionary=np.load("./etgrid/et_dictionary.npy")    
 directory="./etgrid/models/"
-coords=[[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]] # by axis, orig
-seds=[]
-for i in range(len(os.listdir(directory))):
-    for j in range(len(coords)-1):
-        coords[j].append(float(os.listdir(directory)[i].split("_")[(2*j)+1])
-    coords[14].append(float(os.listdir(directory)[i].split("_")[(2*14)+1][:-5]))
-    filename=os.listdir(directory)[i]
-    model=modeling.YSOModel()
-    model.read_yso(directory+filename)
-    seds.append(np.log10(model.spectra["SED"].flux))
+
+failed=[]
+seds_dict=[]
+
+for i in range(len(dictionary)):
+    filename=dictionary[i]['filename']
+    if filename in os.listdir(directory):
+        entry=dictionary[i]
+        model=modeling.YSOModel()
+        model.read_yso(directory+filename)
+        entry['seds'] = np.array(np.log10(model.spectra["SED"].flux))  
+        print("adding "+str(i)+" to dictionary")
+        seds_dict.append(entry)
+    else:
+        print(str(i)+" failed")
+        failed.append(i)
                          
-with open('./etgrid/etgrid_seds.txt', 'wb') as fp:
-    pickle.dump(seds, fp)
-with open('./grid_metadata/etgrid_coords_ordered.txt', 'wb') as fp:
-    pickle.dump(coords, fp)
+
+print(str(len(seds_dict))+" added to seds_dict, "+str(len(failed))+ " failed")
+
+np.save("./etgrid/et_dictionary_seds.npy",seds_dict)
+np.save("./failed.npy",failed)
+
+
+
+
+
