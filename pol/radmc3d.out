@@ -26,12 +26,15 @@
  Reading grid file and prepare grid tree...
     Adjusting theta(ny+1) to exactly pi/2...
  Reading star data...
- Note: Please be aware that you treat the star(s) as
-       point source(s) while using spherical coordinate mode.
-       Since R_*<<R_in this is probably OK, but if you want
-       to play safe, then set istar_sphere = 1 in radmc3d.inp.
+ *****************************************************
+ WARNING: Central star size is more than 10% of
+          inner grid radius. But you still treat
+          stars in point-source mode.
+          Recommendation: In radmc3d.inp
+          set istar_sphere = 1.
+ *****************************************************
  Note: Star 1 is taken to be a blackbody star
-       at a temperature T = 3298. Kelvin
+       at a temperature T = 3115. Kelvin
  Grid information (current status):
    We have 9900 branches, of which 9900 are actual grid cells.
    ---> 100.000% mem use for branches, and 100.000% mem use for actual cells.
@@ -58,9 +61,9 @@
        Range in this file: lambda = [ 0.10E+00, 0.10E+06]
        Simple extrapolations are used to extend this range.
  Reading dust densities...
- Dust mass in species            1  =   4.65416145708222838E-003  Msun
- Dust mass in species            2  =   1.06442521332775620E-003  Msun
- Dust mass total =   5.71858667040998480E-003  Msun
+ Dust mass in species            1  =   3.37794523624924799E-006  Msun
+ Dust mass in species            2  =   1.79163562489507294E-003  Msun
+ Dust mass total =   1.79501357013132218E-003  Msun
  Using dust scattering mode            1
  Computing emissivity database...
  Computing total input luminosities...
@@ -69,19 +72,66 @@
  Starting the thermal Monte Carlo simulation....
  Thread Nr           0 of          10 threads in total
  Thread Nr           5 of          10 threads in total
+ Thread Nr           9 of          10 threads in total
+ Thread Nr           1 of          10 threads in total
  Thread Nr           7 of          10 threads in total
  Thread Nr           3 of          10 threads in total
  Thread Nr           2 of          10 threads in total
- Thread Nr           6 of          10 threads in total
- Thread Nr           4 of          10 threads in total
- Thread Nr           9 of          10 threads in total
- Thread Nr           1 of          10 threads in total
  Thread Nr           8 of          10 threads in total
- Thread:           5 Photon nr:        1000
- Thread:           3 Photon nr:        2000
- Thread:           4 Photon nr:        3000
- Thread:           8 Photon nr:        4000
- Thread:           2 Photon nr:        5000
- Thread:           9 Photon nr:        6000
- Thread:           7 Photon nr:        7000
- Thread:           4 Photon nr:        8000
+ Thread Nr           4 of          10 threads in total
+ Thread Nr           6 of          10 threads in total
+ Thread:           0 Photon nr:        1000
+ Thread:           7 Photon nr:        2000
+ Thread:           0 Photon nr:        3000
+ Thread:           6 Photon nr:        4000
+ Thread:           1 Photon nr:        5000
+ Thread:           7 Photon nr:        6000
+ Thread:           1 Photon nr:        7000
+ Thread:           8 Photon nr:        8000
+ Thread:           7 Photon nr:        9000
+ Thread:           7 Photon nr:       10000
+ Thread:           7 Photon nr:       11000
+ Thread:           4 Photon nr:       12000
+ Thread:           3 Photon nr:       13000
+ Thread:           6 Photon nr:       14000
+ Thread:           9 Photon nr:       15000
+ Thread:           7 Photon nr:       16000
+ Thread:           4 Photon nr:       17000
+ Thread:           4 Photon nr:       18000
+ Thread:           0 Photon nr:       19000
+ Thread:           6 Photon nr:       20000
+ Thread:           6 Photon nr:       21000
+ Thread:           0 Photon nr:       22000
+ Thread:           7 Photon nr:       23000
+ Thread:           7 Photon nr:       24000
+ Thread:           4 Photon nr:       25000
+ Thread:           6 Photon nr:       26000
+ Thread:           8 Photon nr:       27000
+ Thread:           4 Photon nr:       28000
+ Thread:           7 Photon nr:       29000
+ Thread:           1 Photon nr:       30000
+ Thread:           2 Photon nr:       31000
+ Thread:           5 Photon nr:       32000
+ Thread:           5 Photon nr:       33000
+ Thread:           7 Photon nr:       34000
+ Thread:           4 Photon nr:       35000
+ Thread:           2 Photon nr:       36000
+ Thread:           3 Photon nr:       37000
+ Thread:           6 Photon nr:       38000
+ Thread:           4 Photon nr:       39000
+ Thread:           3 Photon nr:       40000
+ Thread:           2 Photon nr:       41000
+ Thread:           3 Photon nr:       42000
+ Thread:           5 Photon nr:       43000
+ Thread:           8 Photon nr:       44000
+ Thread:           5 Photon nr:       45000
+ Thread:           2 Photon nr:       46000
+ Thread:           2 Photon nr:       47000
+ Thread:           4 Photon nr:       48000
+ Thread:           2 Photon nr:       49000
+ Thread:           8 Photon nr:       50000
+ Thread:           2 Photon nr:       51000
+ Thread:           7 Photon nr:       52000
+ Thread:           8 Photon nr:       53000
+ Thread:           4 Photon nr:       54000
+ Thread:           6 Photon nr:       55000
