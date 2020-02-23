@@ -16,6 +16,7 @@ coords=np.load("./etgrid/"+args.rname+"_coords.npy")
 eigenseds=np.load("./etgrid/"+args.rname+"_eigenseds.npy")
 weights=np.load("./etgrid/"+args.rname+"_weights.npy")
 pcamean=np.load("./etgrid/"+args.rname+"_mean.npy")
+sedsflat=np.ndarray.flatten(np.load("./etgrid/seds.npy")[:,100:500])
 
 yerrs=[]
 for i in range(16):
