@@ -2,10 +2,10 @@ import numpy as np
 import george
 from george import kernels
 from scipy.optimize import minimize
-import time
+from time import time
 import argparse
 
-parser=argparse.ArgumentParser(description=desc)
+parser=argparse.ArgumentParser()
 parser.add_argument("--rname", help="name of the pca weights read in for training data",type=str)
 parser.add_argument("--wname", help="name of the results being written out, minus filetype",type=str)
 parser.add_argument("--verbose",help="print out chisq and hyperparameter vector in the likelihood function",action="store_true")
@@ -45,7 +45,10 @@ kernel = 16*kernels.ExpSquaredKernel(15**2,ndim=15,axes=0)*\
 blankhodlr=george.GP(kernel,solver=george.HODLRSolver)
 
 def F_chisq_quiet(hp,gp):
-    hyperparams=np.array(hp).reshape(16,16)
+    if args.solver=="COBYLA":
+        hyperparams=np.transpose(np.array(hp).reshape(16,16))
+    else:
+        hyperparams=np.array(hp).reshape(16,16)
     preds=[]
     for i in range(len(weights)):  # same covfunc for each weight and the sample mean
         gp.set_parameter_vector(hyperparams[i])
@@ -77,8 +80,8 @@ print("minimize routine done in %0.3fs" % (time() - t0))
 print("Final chisq: ")
 print(np.array(result.x).reshape(16,16))
 
-np.save("./"+args.wname+"_optimize_result.npy",np.array(result.x).reshape(16,16))
-np.save("./"+args.wname+"_time_rec.npy",(time() - t0))
+np.save("./../etgrid/"+args.wname+"_optimize_result.npy",np.array(result.x).reshape(16,16))
+np.save("./../etgrid/"+args.wname+"_time_rec.npy",(time() - t0))
 
 
 
