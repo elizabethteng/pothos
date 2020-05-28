@@ -13,6 +13,7 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--threads", help="number of threads",type=int)
 parser.add_argument("--start",help="starting :number",type=int)
 parser.add_argument("--end",help="ending number",type=int)
+parser.add_argument("--time",help="time limit in hours",type=int)
 
 param_names = ["Tstar","logLstar","logMdisk","logRdisk","h0","logRin",\
           "gamma","beta","logMenv","logRenv","fcav","ksi","logamax","p","incl"]
@@ -51,7 +52,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     # Run the thermal simulation
     model.run_thermal(code="radmc3d", nphot=1e6, \
             modified_random_walk=True, verbose=False, setthreads=parser.parse_args().threads, \
-            timelimit=21600)
+            timelimit=parser.parse_args().time*3600)
     
     # Run the SED
     model.set_camera_wavelength(np.logspace(-1.,4.,500))
