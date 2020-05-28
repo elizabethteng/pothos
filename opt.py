@@ -81,8 +81,8 @@ print("minimize routine done in %0.3fs" % (time() - t0))
 print("Final chisq: ")
 print(np.array(result.x).reshape(16,16))
 
-np.save("./../etgrid/"+args.wname+"_optimize_result.npy",np.array(result.x).reshape(16,16))
-np.save("./../etgrid/"+args.wname+"_time_rec.npy",(time() - t0))
+np.save("./etgrid/"+args.wname+"_optimize_result.npy",np.array(result.x).reshape(16,16))
+np.save("./etgrid/"+args.wname+"_time_rec.npy",(time() - t0))
 
 
 
