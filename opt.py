@@ -16,7 +16,7 @@ coords=np.load("./etgrid/"+args.rname+"_coords.npy")
 eigenseds=np.load("./etgrid/"+args.rname+"_eigenseds.npy")
 weights=np.load("./etgrid/"+args.rname+"_weights.npy")
 pcamean=np.load("./etgrid/"+args.rname+"_mean.npy")
-sedsflat=np.ndarray.flatten(np.load("./etgrid/seds.npy")[:,100:500])
+sedsflat=np.load("./etgrid/sedsflat.npy")
 
 yerrs=[]
 for i in range(16):
@@ -60,7 +60,7 @@ def F_chisq_quiet(hp,gp):
         pred, pred_var = gp.predict(weights[i], coords, return_var=True)
         preds.append(pred)
     reconst_SEDs=[]
-    for i in range(3825):
+    for i in range(len(coords)):
         reconst=np.dot(np.array(preds)[:,i][0:15],eigenseds[0:15]) + pcamean + np.array(preds)[:,i][15]
         reconst_SEDs.append(reconst)
     allsedsflat=np.ndarray.flatten(np.array(reconst_SEDs))

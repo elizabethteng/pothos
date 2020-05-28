@@ -51,7 +51,7 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     # Run the thermal simulation
     model.run_thermal(code="radmc3d", nphot=1e6, \
             modified_random_walk=True, verbose=False, setthreads=parser.parse_args().threads, \
-            timelimit=10800)
+            timelimit=21600)
     
     # Run the SED
     model.set_camera_wavelength(np.logspace(-1.,4.,500))
@@ -63,11 +63,13 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     model.write_yso("./../etgrid/models/"+filename)
 
 dictionary=np.load("./../etgrid/et_dictionary.npy")
+failed=np.load("./../failed.npy")
     
 for i in range(parser.parse_args().start,parser.parse_args().end):
     try:
         t0=time()
-        point=dictionary[i]
+        point=dictionary[failed[i]]
+        print(str(i)+" "+str(failed[i]))
         run_yso_model( Tstar=point["Tstar"], logL_star=point["logLstar"], logM_disk=point["logMdisk"], \
                       logR_disk=point["logRdisk"], h_0=point["h0"], logR_in=point["logRin"], gamma=point["gamma"], \
                       beta=point["beta"], logM_env=point["logMenv"], logR_env=point['logRenv'], \
@@ -75,5 +77,5 @@ for i in range(parser.parse_args().start,parser.parse_args().end):
                       incl=point['incl'], filename=point['filename'])
         print("finished running SED #"+str(i)+" in %0.3fs" % (time() - t0))
     except:
-        print(str(i)+" timed out")
+        print(str(failed[i])+" "+str(i)+" timed out")
         pass

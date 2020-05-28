@@ -39,6 +39,8 @@ for i in range(len(seds)):
         y1 = seds[i][ind]
         for j in range(ind):
             seds[i][j]=(100*(np.log10(xvals[j]/x1)))+y1
+
+np.save("./etgrid/sedsflat.npy",np.ndarray.flatten(seds))
             
 # subtracting from each SED its sample mean
 nanseds[nanseds<-20]=np.nan
@@ -79,7 +81,6 @@ parser=argparse.ArgumentParser()
 parser.add_argument("--name", help="pca instance nickname",type=str)
 args=parser.parse_args()
 name=args.name
-
 
 np.save("./etgrid/"+name+"_coords.npy",params_bypoint)
 np.save("./etgrid/"+name+"_eigenseds.npy",eigenseds)
