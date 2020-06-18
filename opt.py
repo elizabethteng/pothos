@@ -10,6 +10,7 @@ parser.add_argument("--rname", help="name of the pca weights read in for trainin
 parser.add_argument("--wname", help="name of the results being written out, minus filetype",type=str)
 parser.add_argument("--verbose",help="print out chisq and hyperparameter vector in the likelihood function",action="store_true")
 parser.add_argument("--solver",help="scipy optimize minimize solver", type=str)
+parser.add_argument("--error",help="percent error for GP computation",type=int)
 args=parser.parse_args()
 
 coords=np.load("./etgrid/"+args.rname+"_coords.npy")
@@ -20,7 +21,7 @@ sedsflat=np.load("./etgrid/sedsflat.npy")
 
 yerrs=[]
 for i in range(16):
-    yerrs.append([x*0.01 for x in weights[i]])
+    yerrs.append([x*0.01*args.error for x in weights[i]])
     
 initvecs=[]
 for i in range(16):
@@ -56,6 +57,7 @@ def F_chisq_quiet(hp,gp):
         if args.verbose==True:
             print("weight #"+str(i))
             print(gp.get_parameter_vector())
+            conv.append(gp.get_parameter_vector())
         gp.compute(coords,yerrs[i])
         pred, pred_var = gp.predict(weights[i], coords, return_var=True)
         preds.append(pred)
@@ -74,6 +76,7 @@ def chisq(p):
 
 
 print("starting minimize routine")
+conv=[]
 t0=time()
 result = minimize(chisq,initvecs,method=args.solver)
 print("minimize routine done in %0.3fs" % (time() - t0))
@@ -82,6 +85,7 @@ print("Final chisq: ")
 print(np.array(result.x).reshape(16,16))
 
 np.save("./etgrid/"+args.wname+"_optimize_result.npy",np.array(result.x).reshape(16,16))
+np.save("./etgrid/"+args.wname+"_convergence.npy",np.array(conv))
 np.save("./etgrid/"+args.wname+"_time_rec.npy",(time() - t0))
 
 
