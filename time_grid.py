@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/software/et_env/bin python
+
 
 import numpy as np
 import os
@@ -63,8 +64,8 @@ def run_yso_model( Tstar=None, logL_star=None, logM_disk=None, logR_disk=None, h
     # Write out the file.
     model.write_yso("./../etgrid/models/"+filename)
 
-dictionary=np.load("./../etgrid/et_dictionary.npy")
-failed=np.load("./../failed.npy")
+dictionary=np.load("./../etgrid/et_dictionary.npy",allow_pickle=True)
+failed=np.load("./../failed.npy",allow_pickle=True)
     
 for i in range(parser.parse_args().start,parser.parse_args().end):
     try:

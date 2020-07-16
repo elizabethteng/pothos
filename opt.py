@@ -1,3 +1,7 @@
+#!/software/et_env/bin python
+
+
+
 import numpy as np
 import george
 from george import kernels
@@ -52,12 +56,13 @@ def F_chisq_quiet(hp,gp):
     else:
         hyperparams=np.array(hp).reshape(16,16)
     preds=[]
+    step_conv=[]
     for i in range(len(weights)):  # same covfunc for each weight and the sample mean
         gp.set_parameter_vector(hyperparams[i])
         if args.verbose==True:
             print("weight #"+str(i))
             print(gp.get_parameter_vector())
-            conv.append(gp.get_parameter_vector())
+        step_conv.append(gp.get_parameter_vector())
         gp.compute(coords,yerrs[i])
         pred, pred_var = gp.predict(weights[i], coords, return_var=True)
         preds.append(pred)
@@ -69,6 +74,8 @@ def F_chisq_quiet(hp,gp):
     chisq=np.sum((sedsflat-allsedsflat)**2/0.1)
     if args.verbose==True:
         print(chisq)
+    conv.append(step_conv)
+    np.save("./etgrid/"+args.wname+"_convergence.npy",np.array(conv))
     return chisq
 
 def chisq(p):
@@ -87,9 +94,6 @@ print(np.array(result.x).reshape(16,16))
 np.save("./etgrid/"+args.wname+"_optimize_result.npy",np.array(result.x).reshape(16,16))
 np.save("./etgrid/"+args.wname+"_convergence.npy",np.array(conv))
 np.save("./etgrid/"+args.wname+"_time_rec.npy",(time() - t0))
-
-
-
 
 
 

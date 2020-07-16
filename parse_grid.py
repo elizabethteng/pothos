@@ -1,10 +1,11 @@
-#!/usr/bin/env python
+#!/software/et_env/bin python
+
 
 import numpy as np
 import os
 import pdspy.modeling as modeling
 
-dictionary=np.load("./etgrid/et_dictionary.npy")    
+dictionary=np.load("./etgrid/et_dictionary.npy",allow_pickle=True)    
 directory="./etgrid/models/"
 
 failed=[]

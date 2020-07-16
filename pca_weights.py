@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/software/et_env/bin python
+
 
 import numpy as np
 from sklearn.decomposition import PCA
@@ -23,11 +24,11 @@ def orig_to_trans(pars):
 param_names = ["Tstar","logLstar","logMdisk","logRdisk","h0","logRin",\
                "gamma","beta","logMenv","logRenv","fcav","ksi","logamax","p","incl"]
 
-seds_dict=np.load("./etgrid/et_dictionary_seds.npy")
+seds_dict=np.load("./etgrid/et_dictionary_seds.npy",allow_pickle=True)
 
-seds=np.load("./etgrid/seds.npy")[:,100:500]
-nanseds=np.load("./etgrid/seds.npy")[:,100:500]
-xvals=np.load("./etgrid/xvals.npy")
+seds=np.load("./etgrid/seds.npy",allow_pickle=True)[:,100:500]
+nanseds=np.load("./etgrid/seds.npy",allow_pickle=True)[:,100:500]
+xvals=np.load("./etgrid/xvals.npy",allow_pickle=True)
 
 # fix -infs: powerlaw cutoff
 for i in range(len(seds)):
@@ -55,7 +56,7 @@ eigenseds=np.array(pca.components_)
 # compile PCA weight data
 fitdata=[]
 for i in range(len(seds)):
-    fitdata.append(pca.transform(seds_msub[0].reshape(1,-1))[0][0:15]) # first 15 weights for each SED
+    fitdata.append(pca.transform(seds_msub[i].reshape(1,-1))[0][0:15]) # first 15 weights for each SED
     
 params_bypoint=[]
 weights_bypoint=[]
