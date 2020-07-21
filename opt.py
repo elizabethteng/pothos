@@ -14,7 +14,7 @@ parser.add_argument("--rname", help="name of the pca weights read in for trainin
 parser.add_argument("--wname", help="name of the results being written out, minus filetype",type=str)
 parser.add_argument("--verbose",help="print out chisq and hyperparameter vector in the likelihood function",action="store_true")
 parser.add_argument("--solver",help="scipy optimize minimize solver", type=str)
-parser.add_argument("--error",help="percent error for GP computation",type=int)
+#parser.add_argument("--error",help="percent error for GP computation",type=int)
 args=parser.parse_args()
 
 coords=np.load("./etgrid/"+args.rname+"_coords.npy")
@@ -25,13 +25,13 @@ sedsflat=np.load("./etgrid/sedsflat.npy")
 
 yerrs=[]
 for i in range(16):
-    yerrs.append([x*0.01*args.error for x in weights[i]])
+    yerrs.append([x*0.01 for x in weights[i]])
     
 initvecs=[]
 for i in range(16):
-    initvecs.append([ 6.33043185, 18.42068074,  0.,  0., -0.4462871 , -5.05145729, -1.38629436, 
-                     -2.4079456086518722, -2.4079456086518722,  -3.2188758248682006, -3.21887582, 
-                     -2.77258872, -2.77258872,  1.38629436,  2.19722458, 0.8109302162163288])
+    initvecs.append([ 4, 20,  -2.1,  -1.5, 1.1 , -3.2, -0.8, 
+                     0.25, -3.45,  -4.7, -3.21887582, 
+                     -2.77258872, -2.77258872,  1.38629436,  2.19722458, -1])
 
 kernel = 16*kernels.ExpSquaredKernel(15**2,ndim=15,axes=0)*\
         kernels.ExpSquaredKernel(1**2,ndim=15,axes=1)*\

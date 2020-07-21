@@ -3,12 +3,12 @@
 import numpy as np
 import os
 
-dictionary=np.load("./data/pothos/etgrid/et_dictionary.npy")
+dictionary=np.load("./etgrid/et_dictionary.npy",allow_pickle=True)
 
 finished=[]
 
 for i in range(len(dictionary)):
-    if dictionary[i]['filename'] in os.listdir("./data/pothos/etgrid/models"):
+    if dictionary[i]['filename'] in os.listdir("./etgrid/models"):
         finished.append(i)
 
 report=[]

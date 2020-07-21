@@ -9,8 +9,8 @@ from dynesty import utils as dyfunc
 import dynesty
 import time
 
-weights=np.load("./etgrid/3962_weights.npy")
-coords=np.load("./etgrid/3962_coords.npy")
+weights=np.load("./etgrid/3976_weights.npy")
+coords=np.load("./etgrid/3976_coords.npy")
 Tstar=coords[:,0]
 logL_star=coords[:,1]
 logM_disk=coords[:,2]
@@ -26,14 +26,14 @@ ksi = coords[:,11]
 loga_max=coords[:,12]
 p=coords[:,13]
 biy=coords[:,14]
-w2=weights[2]
+w2=weights[0]
 yerr=np.array([j*0.01 for j in w2])
 
-x=np.transpose([logL_star,logM_disk,bix,logM_env_t,biy])
+x=np.transpose([Tstar, logL_star,logM_disk,logM_env_t,logR_env])
 kernel = np.var(w2) \
-    * kernels.ExpSquaredKernel(5000**2,ndim=5,axes=0) \
-    * kernels.ExpSquaredKernel(3**2,ndim=5,axes=1) \
-    * kernels.ExpSquaredKernel(0.3**2,ndim=5,axes=2) \
+    * kernels.ExpSquaredKernel(20000**2,ndim=5,axes=0) \
+    * kernels.ExpSquaredKernel(0.35**2,ndim=5,axes=1) \
+    * kernels.ExpSquaredKernel(0.47**2,ndim=5,axes=2) \
     * kernels.ExpSquaredKernel(0.1**2,ndim=5,axes=3) \
     * kernels.ExpSquaredKernel(0.2**2,ndim=5,axes=4) 
 
@@ -47,12 +47,14 @@ def loglike(p):
         gp.set_parameter_vector(p)
         return gp.log_likelihood(w2)
     except:
-        return - 1e10
+        return - 1e14
 
 def ptform(u):
-    #  [-50,50] [-1.4,4.6] [-1.3,3.6] [-4.6,-1.4] [-6,0] [-4.6,-1.4]
-    return [u[0]*100 -50, u[1]*6-1.4 , u[2]*4.9-1.3 , \
-            u[3]*6-4.6 , u[4]*6-6 , u[5]*6-4.6 ]
+    #  [-50,50] [0,30] [-5, 5] [-6.6,3] [-8,0] [-4,0.3]
+    return [u[0]*100 -50, u[1]*30 , u[2]*10-5 , \
+            u[3]*9.6-6.6 , u[4]*8-8 , u[5]*4.3-4 ]
+
+print("testing live points")
 
 sampler = dynesty.NestedSampler(loglike, ptform, ndim, nlive=1000, pool= schwimmbad.MultiPool())
 
@@ -61,25 +63,20 @@ print("live points finished")
 t0=time.time()
 sampler.run_nested()
 print(time.time()-t0)
-np.save("./dy_127814/dynesty_timerec.npy",time.time()-t0)
+np.save("./dy_01289_w0_v2/dynesty_timerec.npy",time.time()-t0)
 results = sampler.results
 
 samples, weights = results.samples, np.exp(results.logwt - results.logz[-1])
 new_samples = dyfunc.resample_equal(samples, weights)
 
-np.save("./dy_127814/dynesty_samples.npy",samples)
-np.save("./dy_127814/dynesty_newsamples.npy",new_samples)
-np.save("./dy_127814/dy_results_127814.npy",results)
+np.save("./dy_01289_w0_v2/dynesty_samples.npy",samples)
+np.save("./dy_01289_w0_v2/dynesty_newsamples.npy",new_samples)
 
-
-# Plot a summary of the run.
 rfig, raxes = dyplot.runplot(results)
-# Plot traces and 1-D marginalized posteriors.
 tfig, taxes = dyplot.traceplot(results)
-# Plot the 2-D marginalized posteriors.
 cfig, caxes = dyplot.cornerplot(results)
 
-rfig.savefig("./dy_127814/dyplot1.png")
-tfig.savefig("./dy_127814/dyplot2.png")
-cfig.savefig("./dy_127814/dyplot3.png")
+rfig.savefig("./dy_01289_w0_v2/dyplot1.png")
+tfig.savefig("./dy_01289_w0_v2/dyplot2.png")
+cfig.savefig("./dy_01289_w0_v2/dyplot3.png")
 
